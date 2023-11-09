@@ -9,6 +9,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -16,24 +18,44 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['getUser'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['getUser'])]
+    #[Assert\Length(
+        min:2,
+        max:50,
+        minMessage: "L'email doit comporter minimum {{ limit }} caractères",
+        maxMessage: "L'email' doit comporter maximim {{ limit }} caractères")]
+    #[Assert\Email(message: "L'email n'est pas valide")]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups(['getUser'])]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\Regex(
+        '/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
+        message: "Votre mot de passe doit contenir un caractère majuscule, minuscule et un caractère spécial"
+    )]
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['getUser'])]
+    #[Assert\Length(
+        min:2,
+        max:50,
+        minMessage: "Le pseudo doit comporter minimum {{ limit }} caractères",
+        maxMessage: "Le pseudo doit comporter maximim {{ limit }} caractères",)]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['getUser'])]
     private ?\DateTimeInterface $dateInscription = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: SportsActivity::class)]
@@ -164,7 +186,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $activity->setUser(null);
             }
         }
-
         return $this;
     }
 }
