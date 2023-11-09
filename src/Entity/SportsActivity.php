@@ -6,6 +6,7 @@ use App\Repository\SportsActivityRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SportsActivityRepository::class)]
 class SportsActivity
@@ -18,18 +19,25 @@ class SportsActivity
 
     #[ORM\Column(length: 50)]
     #[Groups(['getSportsActivity'])]
+    #[Assert\Positive]
     private ?string $duration = null;
 
     #[ORM\Column(length: 50, nullable: true)]
     #[Groups(['getSportsActivity'])]
+    #[Assert\Positive]
     private ?string $distanceTraveled = null;
 
     #[ORM\Column]
     #[Groups(['getSportsActivity'])]
+    #[Assert\Positive]
     private ?float $burntCalories = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['getSportsActivity'])]
+    /**
+     * @var string  "Y-m-d H:i:s" formatted value
+     */
+    #[Assert\DateTime]
     private ?\DateTimeInterface $dateActivity = null;
 
     #[ORM\ManyToOne(inversedBy: 'activity')]
