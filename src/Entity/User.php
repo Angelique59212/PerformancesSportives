@@ -18,7 +18,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['getUser'])]
+    #[Groups(['getUser', 'getSportsActivity'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
@@ -32,7 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column]
-    #[Groups(['getUser'])]
+    #[Groups(['getUser', 'getSportsActivity'])]
     private array $roles = [];
 
     /**
@@ -46,16 +46,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['getUser'])]
+    #[Groups(['getUser', 'getSportsActivity'])]
     #[Assert\Length(
         min:2,
         max:50,
-        minMessage: "Le pseudo doit comporter minimum {{ limit }} caractères",
-        maxMessage: "Le pseudo doit comporter maximim {{ limit }} caractères",)]
+        minMessage: "Le nom doit comporter minimum {{ limit }} caractères",
+        maxMessage: "Le nom doit comporter maximim {{ limit }} caractères",)]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['getUser'])]
+    #[Groups(['getUser', 'getSportsActivity'])]
     private ?\DateTimeInterface $dateInscription = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: SportsActivity::class)]
