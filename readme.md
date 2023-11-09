@@ -24,8 +24,8 @@ Vous devrez utiliser des services personnalisés pour gérer les opérations li�
 Implémentez des services personnalisés pour gérer les opérations liées aux activités sportives et aux utilisateurs.
 
 Ces services devraient inclure des méthodes pour :
-- Enregistrer les activités.
-- Récupérer les activités d'un utilisateur spécifique.
+- _Enregistrer les activités._
+- _Récupérer les activités d'un utilisateur spécifique._
 - Récupérer les activités d'un utilisateur spécifique de la plus récente à la plus vieille.
 - Récupérer les activités d'un utilisateur spécifique triées par la durée.
 - Récupérer les activités d'un utilisateur spécifique triées par les calories brûlées.
@@ -36,4 +36,4 @@ Ces services devraient inclure des méthodes pour :
 - Créez des contrôleurs pour gérer les requêtes HTTP et appeler les services appropriés en fonction des actions demandées, telles que l'enregistrement d'une nouvelle activité, la récupération des performances, la définition des objectifs, etc.
 
 **Sécurité :**
-- Mettez en place des mécanismes de sécurité tels que l'authentification et l'autorisation pour restreindre l'accès à certaines fonctionnalités de l'API, notamment les données sensibles des utilisateurs.
+- _Mettez en place des mécanismes de sécurité tels que l'authentification et l'autorisation pour restreindre l'accès à certaines fonctionnalités de l'API, notamment les données sensibles des utilisateurs._

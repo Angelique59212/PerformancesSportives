@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\SportsActivity;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -21,28 +22,12 @@ class SportsActivityRepository extends ServiceEntityRepository
         parent::__construct($registry, SportsActivity::class);
     }
 
-//    /**
-//     * @return SportsActivity[] Returns an array of SportsActivity objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function recoverActivityByUser(int $id)
+    {
+        $query = $this->createQueryBuilder('s');
+        $query->andWhere('s.user = :id')
+            ->setParameter('id', $id);
+        return $query->getQuery()->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?SportsActivity
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

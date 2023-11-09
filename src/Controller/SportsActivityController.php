@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\SportsActivity;
+use App\Entity\User;
 use App\Repository\SportsActivityRepository;
 use App\Service\ErrorValidatorService;
+use App\Service\SportsActivityService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,10 +17,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
+#[Route('/api/activity')]
 class SportsActivityController extends AbstractController
 {
     private SerializerInterface $serializer;
     private SportsActivityRepository $sportsActivityRepository;
+    private SportsActivityService $sportsActivityService;
     private EntityManagerInterface $entityManager;
 
     /**
@@ -26,10 +30,16 @@ class SportsActivityController extends AbstractController
      * @param SportsActivityRepository $sportsActivityRepository
      * @param EntityManagerInterface $entityManager
      */
-    public function __construct(SerializerInterface $serializer, SportsActivityRepository $sportsActivityRepository, EntityManagerInterface $entityManager)
+    public function __construct(
+        SerializerInterface $serializer,
+        SportsActivityRepository $sportsActivityRepository,
+        SportsActivityService $sportsActivityService,
+        EntityManagerInterface $entityManager
+    )
     {
         $this->serializer = $serializer;
         $this->sportsActivityRepository = $sportsActivityRepository;
+        $this->sportsActivityService = $sportsActivityService;
         $this->entityManager = $entityManager;
     }
 
@@ -43,17 +53,18 @@ class SportsActivityController extends AbstractController
     }
 
     #[Route('/new', name: 'app_sportsActivity_new', methods: ['POST'])]
-    public function new(Request $request, ErrorValidatorService $errorValidatorService): JsonResponse
+    public function new(
+        Request $request,
+        ErrorValidatorService $errorValidatorService,
+        SportsActivityService $sportsActivityService
+    ): JsonResponse
     {
         $sportsActivity = $this->serializer->deserialize($request->getContent(), SportsActivity::class, 'json');
-
         $errors = $errorValidatorService->getErrors($sportsActivity);
         if (count($errors) > 0) {
             return new JsonResponse($errors, Response::HTTP_BAD_REQUEST);
         }
-
-        $this->entityManager->persist($sportsActivity);
-        $this->entityManager->flush();
+        $sportsActivityService->addActivity($sportsActivity, $this->getUser());
 
         return new JsonResponse
         ($this->serializer->serialize($sportsActivity, 'json', ['groups'=>'getSportsActivity']), Response::HTTP_CREATED, [], true);
@@ -101,5 +112,14 @@ class SportsActivityController extends AbstractController
             return new JsonResponse(null, Response::HTTP_NO_CONTENT);
         }
         return new JsonResponse(['message'=>"Activité non trouvée"], Response::HTTP_NOT_FOUND);
+    }
+
+    #[Route('/searchActivityUser/{id}', name: 'app_sportsactivity_searchactivitybyuser', methods: ['GET'])]
+    public function searchActivityByUser(int $id): JsonResponse
+    {
+        $activitiesByUser = $this->serializer->serialize(
+            $this->sportsActivityService->getActivityByUser($id),'json', ['groups'=>'getSportsActivity']);
+
+        return new JsonResponse($activitiesByUser, Response::HTTP_OK, [], true);
     }
 }

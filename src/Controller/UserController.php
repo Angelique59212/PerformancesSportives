@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\ErrorValidatorService;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -36,7 +37,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/', name: 'app_user', methods: ['GET'])]
-    #[IsGranted("ROLE_ADMIN", "Seul l'admin peut accéder à tout les utilisateurs")]
+    #[IsGranted("ROLE_ADMIN", message: "Seul l'admin peut accéder à tout les utilisateurs")]
     public function getAll(): JsonResponse
     {
        return new JsonResponse(
@@ -49,6 +50,8 @@ class UserController extends AbstractController
     {
         $user = $this->serializer->deserialize($request->getContent(), User::class, 'json');
         $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
+
+        $user->setDateInscription(new DateTime());
 
         $errors = $errorValidatorService->getErrors($user);
         if (count($errors) > 0) {
