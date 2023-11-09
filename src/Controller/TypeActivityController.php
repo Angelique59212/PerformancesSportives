@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\TypeActivity;
 use App\Repository\TypeActivityRepository;
+use App\Service\ErrorValidatorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,9 +43,14 @@ class TypeActivityController extends AbstractController
     }
 
     #[Route('/new', name: 'app_typeActivity_new', methods: ['POST'])]
-    public function new(Request $request): JsonResponse
+    public function new(Request $request, ErrorValidatorService $errorValidatorService): JsonResponse
     {
         $typeActivity = $this->serializer->deserialize($request->getContent(), TypeActivity::class, 'json');
+
+        $errors = $errorValidatorService->getErrors($typeActivity);
+        if (count($errors) > 0) {
+            return new JsonResponse($errors, Response::HTTP_BAD_REQUEST);
+        }
 
         $this->entityManager->persist($typeActivity);
         $this->entityManager->flush();
@@ -65,13 +71,18 @@ class TypeActivityController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_typeActivity_edit', methods: ['PUT'])]
-    public function edit(Request $request, TypeActivity $currentTypeActivity): JsonResponse
+    public function edit(Request $request, TypeActivity $currentTypeActivity, ErrorValidatorService $errorValidatorService): JsonResponse
     {
         $editTypeActivity = $this->serializer->deserialize(
             $request->getContent(),
             TypeActivity::class,
             'json',
             [AbstractNormalizer::OBJECT_TO_POPULATE=>$currentTypeActivity]);
+
+        $errors = $errorValidatorService->getErrors($editTypeActivity);
+        if (count($errors) > 0) {
+            return new JsonResponse($errors, Response::HTTP_BAD_REQUEST);
+        }
 
         $this->entityManager->persist($editTypeActivity);
         $this->entityManager->flush();

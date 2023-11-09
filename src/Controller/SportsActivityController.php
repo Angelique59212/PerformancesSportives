@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\SportsActivity;
 use App\Repository\SportsActivityRepository;
+use App\Service\ErrorValidatorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,9 +43,14 @@ class SportsActivityController extends AbstractController
     }
 
     #[Route('/new', name: 'app_sportsActivity_new', methods: ['POST'])]
-    public function new(Request $request): JsonResponse
+    public function new(Request $request, ErrorValidatorService $errorValidatorService): JsonResponse
     {
         $sportsActivity = $this->serializer->deserialize($request->getContent(), SportsActivity::class, 'json');
+
+        $errors = $errorValidatorService->getErrors($sportsActivity);
+        if (count($errors) > 0) {
+            return new JsonResponse($errors, Response::HTTP_BAD_REQUEST);
+        }
 
         $this->entityManager->persist($sportsActivity);
         $this->entityManager->flush();
@@ -65,13 +71,18 @@ class SportsActivityController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_sportsActivity_edit', methods: ['PUT'])]
-    public function edit(Request $request, SportsActivity $currentSportsActivity): JsonResponse
+    public function edit(Request $request, SportsActivity $currentSportsActivity, ErrorValidatorService $errorValidatorService): JsonResponse
     {
         $editSportsActivity = $this->serializer->deserialize(
             $request->getContent(),
             SportsActivity::class,
             'json',
             [AbstractNormalizer::OBJECT_TO_POPULATE=>$currentSportsActivity]);
+
+        $errors = $errorValidatorService->getErrors($editSportsActivity);
+        if (count($errors) > 0) {
+            return new JsonResponse($errors, Response::HTTP_BAD_REQUEST);
+        }
 
         $this->entityManager->persist($editSportsActivity);
         $this->entityManager->flush();
