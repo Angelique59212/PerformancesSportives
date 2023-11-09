@@ -6,6 +6,7 @@ use App\Repository\TypeActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TypeActivityRepository::class)]
 class TypeActivity
@@ -13,9 +14,11 @@ class TypeActivity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['getTypeActivity'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['getTypeActivity'])]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'typeActivity', targetEntity: SportsActivity::class)]
