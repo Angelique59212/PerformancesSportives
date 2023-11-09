@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\ErrorValidatorService;
+use App\Service\UserService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -106,5 +107,14 @@ class UserController extends AbstractController
             return new JsonResponse(null, Response::HTTP_NO_CONTENT);
         }
         return new JsonResponse(['message'=>'Utilisateur non trouvé'], Response::HTTP_NOT_FOUND);
+    }
+
+    #[Route('/searchUserByName/{name}', name: 'app_search_by_name', methods: ['GET'])]
+    public function searchNameByUser($name, UserService $userService): JsonResponse
+    {
+        $activitiesByUser = $this->serializer->serialize(
+            $userService->getNameByUser($name), 'json', ['groups' => 'getUser']);
+
+        return new JsonResponse($activitiesByUser, Response::HTTP_OK, [], true);
     }
 }

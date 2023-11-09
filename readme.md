@@ -26,14 +26,14 @@ Implémentez des services personnalisés pour gérer les opérations liées aux 
 Ces services devraient inclure des méthodes pour :
 - _Enregistrer les activités._
 - _Récupérer les activités d'un utilisateur spécifique._
-- Récupérer les activités d'un utilisateur spécifique de la plus récente à la plus vieille.
-- Récupérer les activités d'un utilisateur spécifique triées par la durée.
-- Récupérer les activités d'un utilisateur spécifique triées par les calories brûlées.
-- Récupérer les activités d'un utilisateur spécifique triées par le type d'activité.
+- _Récupérer les activités d'un utilisateur spécifique de la plus récente à la plus vieille._
+- _Récupérer les activités d'un utilisateur spécifique triées par la durée._
+- _Récupérer les activités d'un utilisateur spécifique triées par les calories brûlées._
+- _Récupérer les activités d'un utilisateur spécifique triées par le type d'activité._
 - Rechercher un utilisateur par le nom (like)
 
 **Contrôleurs :**
-- Créez des contrôleurs pour gérer les requêtes HTTP et appeler les services appropriés en fonction des actions demandées, telles que l'enregistrement d'une nouvelle activité, la récupération des performances, la définition des objectifs, etc.
+- _Créez des contrôleurs pour gérer les requêtes HTTP et appeler les services appropriés en fonction des actions demandées, telles que l'enregistrement d'une nouvelle activité, la récupération des performances, la définition des objectifs, etc._
 
 **Sécurité :**
 - _Mettez en place des mécanismes de sécurité tels que l'authentification et l'autorisation pour restreindre l'accès à certaines fonctionnalités de l'API, notamment les données sensibles des utilisateurs._

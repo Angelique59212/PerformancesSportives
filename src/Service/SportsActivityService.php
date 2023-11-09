@@ -36,4 +36,23 @@ class SportsActivityService
         return $this->sportsActivityRepository->recoverActivityByUser($id);
     }
 
+    public function getActivityByUserDesc(int $id)
+    {
+        return $this->sportsActivityRepository->getActivityByDes($id);
+    }
+
+    public function getActivityByUserDuration(int $id)
+    {
+        return $this->sportsActivityRepository->getActivatyByDuration($id);
+    }
+
+    public function getActivityByUserCalorie(int $id)
+    {
+        return $this->sportsActivityRepository->getActivatyByCalorie($id);
+    }
+
+    public function getActivityTypeByUser(int $id)
+    {
+        return $this->sportsActivityRepository->getActivityTypeByUser($id);
+    }
 }

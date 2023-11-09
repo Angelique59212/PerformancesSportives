@@ -32,7 +32,7 @@ class SportsActivity
     #[Assert\Positive]
     private ?float $burntCalories = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['getSportsActivity'])]
     /**
      * @var string  "Y-m-d H:i:s" formatted value
@@ -41,9 +41,11 @@ class SportsActivity
     private ?\DateTimeInterface $dateActivity = null;
 
     #[ORM\ManyToOne(inversedBy: 'activity')]
+    #[Groups(['getSportsActivity'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'sportsActivities')]
+    #[Groups(['getSportsActivity'])]
     private ?TypeActivity $typeActivity = null;
 
     public function getId(): ?int

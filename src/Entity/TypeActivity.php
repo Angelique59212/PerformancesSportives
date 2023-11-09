@@ -15,11 +15,11 @@ class TypeActivity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['getTypeActivity'])]
+    #[Groups(['getTypeActivity', 'getSportsActivity'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    #[Groups(['getTypeActivity'])]
+    #[Groups(['getTypeActivity', 'getSportsActivity'])]
     #[Assert\NotBlank]
     private ?string $name = null;
 

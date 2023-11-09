@@ -30,4 +30,42 @@ class SportsActivityRepository extends ServiceEntityRepository
         return $query->getQuery()->getResult();
     }
 
+    public function getActivityByDes(int $id)
+    {
+        $query = $this->createQueryBuilder('s');
+        $query->andWhere('s.user = :id')
+            ->setParameter('id', $id)
+            ->orderBy('s.dateActivity', 'DESC');
+        return $query->getQuery()->getResult();
+    }
+
+    public function getActivatyByDuration(int $id)
+    {
+        $query = $this->createQueryBuilder('s');
+        $query->andWhere('s.user = :id')
+            ->setParameter('id', $id)
+            ->orderBy('s.duration', 'DESC');
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getActivatyByCalorie(int $id)
+    {
+        $query = $this->createQueryBuilder('s');
+        $query->andWhere('s.user = :id')
+            ->setParameter('id', $id)
+            ->orderBy('s.burntCalories', 'DESC');
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getActivityTypeByUser(int $id)
+    {
+        $query = $this->createQueryBuilder('s');
+        $query->andWhere('s.user = :id')
+            ->setParameter('id', $id)
+            ->orderBy('s.typeActivity');
+
+        return $query->getQuery()->getResult();
+    }
 }

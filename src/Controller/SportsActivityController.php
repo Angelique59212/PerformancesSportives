@@ -31,10 +31,10 @@ class SportsActivityController extends AbstractController
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(
-        SerializerInterface $serializer,
+        SerializerInterface      $serializer,
         SportsActivityRepository $sportsActivityRepository,
-        SportsActivityService $sportsActivityService,
-        EntityManagerInterface $entityManager
+        SportsActivityService    $sportsActivityService,
+        EntityManagerInterface   $entityManager
     )
     {
         $this->serializer = $serializer;
@@ -49,12 +49,12 @@ class SportsActivityController extends AbstractController
     {
         return new JsonResponse(
             $this->serializer->serialize(
-                $this->sportsActivityRepository->findAll(), 'json',['groups'=>'getSportsActivity']), Response::HTTP_OK, [], true);
+                $this->sportsActivityRepository->findAll(), 'json', ['groups' => 'getSportsActivity']), Response::HTTP_OK, [], true);
     }
 
     #[Route('/new', name: 'app_sportsActivity_new', methods: ['POST'])]
     public function new(
-        Request $request,
+        Request               $request,
         ErrorValidatorService $errorValidatorService,
         SportsActivityService $sportsActivityService
     ): JsonResponse
@@ -67,7 +67,7 @@ class SportsActivityController extends AbstractController
         $sportsActivityService->addActivity($sportsActivity, $this->getUser());
 
         return new JsonResponse
-        ($this->serializer->serialize($sportsActivity, 'json', ['groups'=>'getSportsActivity']), Response::HTTP_CREATED, [], true);
+        ($this->serializer->serialize($sportsActivity, 'json', ['groups' => 'getSportsActivity']), Response::HTTP_CREATED, [], true);
     }
 
     #[Route('/show/{id}', name: 'app_sportsActivity_show', methods: ['GET'])]
@@ -76,7 +76,7 @@ class SportsActivityController extends AbstractController
     {
         $sportsActivity = $this->sportsActivityRepository->find($id);
         if ($sportsActivity) {
-            return new JsonResponse($this->serializer->serialize($sportsActivity, 'json', ['groups'=>'getSportsActivity']), Response::HTTP_OK, [], true);
+            return new JsonResponse($this->serializer->serialize($sportsActivity, 'json', ['groups' => 'getSportsActivity']), Response::HTTP_OK, [], true);
         }
         return new JsonResponse(["message" => "L'activité n'a pas été trouvée"], Response::HTTP_NOT_FOUND);
     }
@@ -88,7 +88,7 @@ class SportsActivityController extends AbstractController
             $request->getContent(),
             SportsActivity::class,
             'json',
-            [AbstractNormalizer::OBJECT_TO_POPULATE=>$currentSportsActivity]);
+            [AbstractNormalizer::OBJECT_TO_POPULATE => $currentSportsActivity]);
 
         $errors = $errorValidatorService->getErrors($editSportsActivity);
         if (count($errors) > 0) {
@@ -98,10 +98,10 @@ class SportsActivityController extends AbstractController
         $this->entityManager->persist($editSportsActivity);
         $this->entityManager->flush();
 
-        return new JsonResponse(['message'=>"Activité mise à jour", Response::HTTP_OK]);
+        return new JsonResponse(['message' => "Activité mise à jour", Response::HTTP_OK]);
     }
 
-    #[Route('/{id}', name: 'app_sportsActivity_delete',methods: ['DELETE'])]
+    #[Route('/{id}', name: 'app_sportsActivity_delete', methods: ['DELETE'])]
     #[IsGranted("ROLE_ADMIN", message: "Vous n'avez pas les droits")]
     public function delete(int $id): JsonResponse
     {
@@ -111,14 +111,50 @@ class SportsActivityController extends AbstractController
             $this->entityManager->flush();
             return new JsonResponse(null, Response::HTTP_NO_CONTENT);
         }
-        return new JsonResponse(['message'=>"Activité non trouvée"], Response::HTTP_NOT_FOUND);
+        return new JsonResponse(['message' => "Activité non trouvée"], Response::HTTP_NOT_FOUND);
     }
 
-    #[Route('/searchActivityUser/{id}', name: 'app_sportsactivity_searchactivitybyuser', methods: ['GET'])]
+    #[Route('/searchActivityUser/{id}', name: 'app_searchactivitybyuser', methods: ['GET'])]
     public function searchActivityByUser(int $id): JsonResponse
     {
         $activitiesByUser = $this->serializer->serialize(
-            $this->sportsActivityService->getActivityByUser($id),'json', ['groups'=>'getSportsActivity']);
+            $this->sportsActivityService->getActivityByUser($id), 'json', ['groups' => 'getSportsActivity']);
+
+        return new JsonResponse($activitiesByUser, Response::HTTP_OK, [], true);
+    }
+
+    #[Route('/searchActivityDesc/{id}', name: 'app_searchactivityDesc', methods: ['GET'])]
+    public function searchActivityByUserDesc(int $id): JsonResponse
+    {
+        $activitiesByUser = $this->serializer->serialize(
+            $this->sportsActivityService->getActivityByUserDesc($id), 'json', ['groups' => 'getSportsActivity']);
+
+        return new JsonResponse($activitiesByUser, Response::HTTP_OK, [], true);
+    }
+
+    #[Route('/searchActivityDuration/{id}', name: 'app_searchactivityDuration', methods: ['GET'])]
+    public function searchActivityByUserDuration(int $id): JsonResponse
+    {
+        $activitiesByUser = $this->serializer->serialize(
+            $this->sportsActivityService->getActivityByUserDuration($id), 'json', ['groups' => 'getSportsActivity']);
+
+        return new JsonResponse($activitiesByUser, Response::HTTP_OK, [], true);
+    }
+
+    #[Route('/searchActivityCalorie/{id}', name: 'app_searchactivityCalorie', methods: ['GET'])]
+    public function searchActivityByUserCalorie(int $id): JsonResponse
+    {
+        $activitiesByUser = $this->serializer->serialize(
+            $this->sportsActivityService->getActivityByUserCalorie($id), 'json', ['groups' => 'getSportsActivity']);
+
+        return new JsonResponse($activitiesByUser, Response::HTTP_OK, [], true);
+    }
+
+    #[Route('/searchActivityType/{id}', name: 'app_searchactivityType', methods: ['GET'])]
+    public function searchActivityTypeByUser(int $id): JsonResponse
+    {
+        $activitiesByUser = $this->serializer->serialize(
+            $this->sportsActivityService->getActivityTypeByUser($id), 'json', ['groups' => 'getSportsActivity']);
 
         return new JsonResponse($activitiesByUser, Response::HTTP_OK, [], true);
     }

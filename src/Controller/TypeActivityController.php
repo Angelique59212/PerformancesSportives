@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\TypeActivity;
 use App\Repository\TypeActivityRepository;
 use App\Service\ErrorValidatorService;
+use App\Service\TypeActivityService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,6 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
+#[Route('/api/typeActivity')]
 class TypeActivityController extends AbstractController
 {
     private SerializerInterface $serializer;
@@ -39,7 +41,7 @@ class TypeActivityController extends AbstractController
     {
         return new JsonResponse(
             $this->serializer->serialize(
-                $this->typeActivityRepository->findAll(), 'json',['groups'=>'getTypeActivity']), Response::HTTP_OK, [], true);
+                $this->typeActivityRepository->findAll(), 'json', ['groups' => 'getTypeActivity']), Response::HTTP_OK, [], true);
     }
 
     #[Route('/new', name: 'app_typeActivity_new', methods: ['POST'])]
@@ -56,7 +58,7 @@ class TypeActivityController extends AbstractController
         $this->entityManager->flush();
 
         return new JsonResponse
-        ($this->serializer->serialize($typeActivity, 'json', ['groups'=>'getTypeActivity']), Response::HTTP_CREATED, [], true);
+        ($this->serializer->serialize($typeActivity, 'json', ['groups' => 'getTypeActivity']), Response::HTTP_CREATED, [], true);
     }
 
     #[Route('/show/{id}', name: 'app_typeActivity_show', methods: ['GET'])]
@@ -65,7 +67,7 @@ class TypeActivityController extends AbstractController
     {
         $typeActivity = $this->typeActivityRepository->find($id);
         if ($typeActivity) {
-            return new JsonResponse($this->serializer->serialize($typeActivity, 'json', ['groups'=>'getTypeActivity']), Response::HTTP_OK, [], true);
+            return new JsonResponse($this->serializer->serialize($typeActivity, 'json', ['groups' => 'getTypeActivity']), Response::HTTP_OK, [], true);
         }
         return new JsonResponse(["message" => "Le type d'activité n'est pas trouvé"], Response::HTTP_NOT_FOUND);
     }
@@ -77,7 +79,7 @@ class TypeActivityController extends AbstractController
             $request->getContent(),
             TypeActivity::class,
             'json',
-            [AbstractNormalizer::OBJECT_TO_POPULATE=>$currentTypeActivity]);
+            [AbstractNormalizer::OBJECT_TO_POPULATE => $currentTypeActivity]);
 
         $errors = $errorValidatorService->getErrors($editTypeActivity);
         if (count($errors) > 0) {
@@ -87,10 +89,10 @@ class TypeActivityController extends AbstractController
         $this->entityManager->persist($editTypeActivity);
         $this->entityManager->flush();
 
-        return new JsonResponse(['message'=>"Type d'activité mise à jour", Response::HTTP_OK]);
+        return new JsonResponse(['message' => "Type d'activité mise à jour", Response::HTTP_OK]);
     }
 
-    #[Route('/{id}', name: 'app_typeActivity_delete',methods: ['DELETE'])]
+    #[Route('/{id}', name: 'app_typeActivity_delete', methods: ['DELETE'])]
     #[IsGranted("ROLE_ADMIN", message: "Vous n'avez pas les droits")]
     public function delete(int $id): JsonResponse
     {
@@ -100,6 +102,6 @@ class TypeActivityController extends AbstractController
             $this->entityManager->flush();
             return new JsonResponse(null, Response::HTTP_NO_CONTENT);
         }
-        return new JsonResponse(['message'=>"Type d'activité non trouvé"], Response::HTTP_NOT_FOUND);
+        return new JsonResponse(['message' => "Type d'activité non trouvé"], Response::HTTP_NOT_FOUND);
     }
 }
