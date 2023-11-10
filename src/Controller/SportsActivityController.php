@@ -61,10 +61,13 @@ class SportsActivityController extends AbstractController
     {
         $sportsActivity = $this->serializer->deserialize($request->getContent(), SportsActivity::class, 'json');
         $errors = $errorValidatorService->getErrors($sportsActivity);
+
+        $content =$request->toArray();
+        $idTypeActivity = $content['idTypeActivity'] ?? -1;
         if (count($errors) > 0) {
             return new JsonResponse($errors, Response::HTTP_BAD_REQUEST);
         }
-        $sportsActivityService->addActivity($sportsActivity, $this->getUser());
+        $sportsActivityService->addActivity($sportsActivity, $this->getUser(), $idTypeActivity);
 
         return new JsonResponse
         ($this->serializer->serialize($sportsActivity, 'json', ['groups' => 'getSportsActivity']), Response::HTTP_CREATED, [], true);

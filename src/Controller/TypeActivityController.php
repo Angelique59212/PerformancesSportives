@@ -5,14 +5,12 @@ namespace App\Controller;
 use App\Entity\TypeActivity;
 use App\Repository\TypeActivityRepository;
 use App\Service\ErrorValidatorService;
-use App\Service\TypeActivityService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -35,8 +33,13 @@ class TypeActivityController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
+    #[Route('/test', name: 'app_typeActivity_test', methods: ['GET'])]
+    public function getTest(): JsonResponse
+    {
+        return new JsonResponse(["data"=>"test"], Response::HTTP_OK);
+    }
+
     #[Route('/', name: 'app_typeActivity', methods: ['GET'])]
-    #[IsGranted("ROLE_ADMIN", "Seul l'admin peut accéder")]
     public function getAll(): JsonResponse
     {
         return new JsonResponse(
@@ -62,7 +65,6 @@ class TypeActivityController extends AbstractController
     }
 
     #[Route('/show/{id}', name: 'app_typeActivity_show', methods: ['GET'])]
-    #[IsGranted("ROLE_ADMIN", message: "Route non autorisé")]
     public function show(int $id): JsonResponse
     {
         $typeActivity = $this->typeActivityRepository->find($id);
@@ -93,7 +95,6 @@ class TypeActivityController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_typeActivity_delete', methods: ['DELETE'])]
-    #[IsGranted("ROLE_ADMIN", message: "Vous n'avez pas les droits")]
     public function delete(int $id): JsonResponse
     {
         $typeActivity = $this->typeActivityRepository->find($id);
